@@ -1,0 +1,51 @@
+spring:
+  kafka:
+    consumer:
+      group-id: consumer-1
+    producer:
+      properties:
+        max:
+          request:
+            size: 204857600
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 1024MB
+  datasource:
+    username: root
+    password: password
+    url: jdbc:mysql://localhost:3306/db_xss?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=true&serverTimezone=UTC&rewriteBatchedStatements=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    #把默认数据源切换成druid
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      db-type: mysql
+      initial-size: 100 # 初始化连接数
+      min-idle: 10
+      max-active: 200 # 最大连接数
+      max-wait: 60000 # 连接超时时间
+      filter:
+        stat:
+          enabled: true
+          log-slow-sql: true  # 开启mansql监控
+          slow-sql-millis: 2000 # 超过2ms就是慢sql
+          merge-sql: false
+      break-after-acquire-failure: true  # 开启重连机制
+      connection-error-retry-attempts: 2 # 尝试重连两次
+  devtools:
+    restart:
+      enabled: false
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    # 打印语句
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 自动转换驼峰
+    map-underscore-to-camel-case: true
+logging:
+  level:
+    root: error
+    org.springframework.web: error
+
+
