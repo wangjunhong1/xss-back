@@ -64,12 +64,12 @@ public class TextDetectController {
             DetectResult svm = predict_svm(t);
             DetectResult k_means = predict_k_means(t);
             DetectResult decision_tree = predict_decision_tree(t);
-            DetectResult logistic_regression = predict_logistic_regression(t);
+            DetectResult logistic_regression = predict_random_forest(t);
             DetectResult naive_bayes = predict_naive_bayes(t);
             model_res.add(new com.wjh.xss_back.response.DetectResult.Res("svm", svm.getResult()));
             model_res.add(new com.wjh.xss_back.response.DetectResult.Res("decision_tree", decision_tree.getResult()));
             model_res.add(new com.wjh.xss_back.response.DetectResult.Res("k-means", k_means.getResult()));
-            model_res.add(new com.wjh.xss_back.response.DetectResult.Res("logistic_regression", logistic_regression.getResult()));
+            model_res.add(new com.wjh.xss_back.response.DetectResult.Res("random_forest", logistic_regression.getResult()));
             model_res.add(new com.wjh.xss_back.response.DetectResult.Res("naive_bayes", naive_bayes.getResult()));
             keywords.addAll(Arrays.asList(svm.getKeyword().replaceAll("[\\[\\]',]", "").split("\\s+")));
             keywords.addAll(Arrays.asList(k_means.getKeyword().replaceAll("[\\[\\]',]", "").split("\\s+")));
@@ -168,15 +168,15 @@ public class TextDetectController {
         return detectResult;
     }
 
-    private synchronized DetectResult predict_logistic_regression(Text t) throws InterruptedException {
+    private synchronized DetectResult predict_random_forest(Text t) throws InterruptedException {
         DetectRecorder detectRecorder = new DetectRecorder();
         detectRecorder.setId(UUID.randomUUID().toString());
         detectRecorder.setTextId(t.getId());
-        detectRecorder.setModel("logistic_regression");
+        detectRecorder.setModel("random_forest");
         detectRecorder.setStartDate(new Date());
         detectRecorderService.save(detectRecorder);
         // svm
-        map.put("model", "logistic_regression");
+        map.put("model", "random_forest");
         messageSender.sendMessage("text", JSON.toJSONString(map));
         wait(120000);
         DetectResult detectResult = new DetectResult();

@@ -4,10 +4,15 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.wjh.xss_back.beans.User;
 import com.wjh.xss_back.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author wangjunhong
@@ -16,14 +21,15 @@ import java.util.HashMap;
  */
 @RestController
 @RequestMapping("/user")
+@Slf4j
 @CrossOrigin(originPatterns = "*", allowCredentials = "true")
-public class LoginController {
+public class UserController {
 
     @Autowired
     UserService userService;
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
+    public Map login(@RequestBody User user) {
         System.out.println(user);
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", user.getUsername());
@@ -44,12 +50,23 @@ public class LoginController {
             map.put("state", 500);
             map.put("message", "服务器异常，请稍后再试");
         } finally {
-            return JSON.toJSONString(map);
+            return map;
         }
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "success";
+    @PostMapping("/signup")
+    public Map signup(@RequestBody User user) {
+        Map response = new HashMap<String, String>();
+        QueryWrapper userWrapper = new QueryWrapper();
+        userWrapper.eq("username", user.getUsername());
+        if (userService.getOne(userWrapper) != null) {
+            response.put("state", "300");
+            response.put("message", "用户已存在");
+            return response;
+        }
+        userService.save(user);
+        response.put("state", "200");
+        response.put("message", "注册成功");
+        return response;
     }
 }

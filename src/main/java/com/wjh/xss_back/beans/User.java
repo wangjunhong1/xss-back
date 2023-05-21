@@ -13,8 +13,6 @@ import lombok.Data;
 @Data
 @TableName("user")
 public class User {
-    @TableId(type = IdType.ASSIGN_UUID)
-    private String id;
     private String username;
     private String password;
 }
