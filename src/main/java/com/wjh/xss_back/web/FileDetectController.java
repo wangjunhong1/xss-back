@@ -27,7 +27,6 @@ import java.util.*;
 @CrossOrigin(originPatterns = "*", allowCredentials = "true")
 @Slf4j
 public class FileDetectController {
-    private String SPLITED = "@#@";
     private String FILE_DIRECTORY = "";
     private String path = "";
     public List<Result> list = null;
@@ -91,7 +90,7 @@ public class FileDetectController {
         fileUploadRecorderService.save(entity);
     }
 
-    public synchronized void  notify_() {
+    public synchronized void notify_() {
         notify();
     }
 
@@ -112,6 +111,7 @@ public class FileDetectController {
             // 记录file_detect_recorder part1
             FileDetectRecorder fileDetectRecorder = new FileDetectRecorder();
             String fileDetectRecorderId = UUID.randomUUID().toString();
+            fileDetectRecorder.setUsername(model.getUsername());
             fileDetectRecorder.setId(fileDetectRecorderId);
             fileDetectRecorder.setStartTime(new Date());
             fileDetectRecorder.setUseModel(model.getName());
@@ -125,6 +125,7 @@ public class FileDetectController {
                 t.setFileId(fileId);
                 DetectRecorder detectRecorder = new DetectRecorder();
                 String detectRecorderId = UUID.randomUUID().toString();
+                detectRecorder.setUsername(model.getUsername());
                 detectRecorder.setId(detectRecorderId);
                 detectRecorder.setTextId(textId);
                 detectRecorder.setModel(model.getName());

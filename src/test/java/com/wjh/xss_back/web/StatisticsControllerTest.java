@@ -20,7 +20,7 @@ public class StatisticsControllerTest {
 
     @Test
     public void testGetBarData(){
-        for (List<Long> barDatum : controller.getBarData()) {
+        for (List<Long> barDatum : controller.getBarData("")) {
             System.out.println(barDatum);
         }
     }

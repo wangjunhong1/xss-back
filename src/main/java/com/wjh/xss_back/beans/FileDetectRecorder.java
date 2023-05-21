@@ -17,4 +17,5 @@ public class FileDetectRecorder {
     private Date startTime;
     private Date finishTime;
     private String useModel;
+    private String username;
 }

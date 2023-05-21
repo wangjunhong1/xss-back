@@ -60,12 +60,13 @@ public class TextDetectController {
         detectResult.setDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(begin));
         List<com.wjh.xss_back.response.DetectResult.Res> model_res = new ArrayList<>();
         List<String> keywords = new ArrayList<>();
+        String username = modelText.getUsername();
         try {
-            DetectResult svm = predict_svm(t);
-            DetectResult k_means = predict_k_means(t);
-            DetectResult decision_tree = predict_decision_tree(t);
-            DetectResult logistic_regression = predict_random_forest(t);
-            DetectResult naive_bayes = predict_naive_bayes(t);
+            DetectResult svm = predict_svm(t, username);
+            DetectResult k_means = predict_k_means(t, username);
+            DetectResult decision_tree = predict_decision_tree(t, username);
+            DetectResult logistic_regression = predict_random_forest(t, username);
+            DetectResult naive_bayes = predict_naive_bayes(t, username);
             model_res.add(new com.wjh.xss_back.response.DetectResult.Res("svm", svm.getResult()));
             model_res.add(new com.wjh.xss_back.response.DetectResult.Res("decision_tree", decision_tree.getResult()));
             model_res.add(new com.wjh.xss_back.response.DetectResult.Res("k-means", k_means.getResult()));
@@ -105,8 +106,9 @@ public class TextDetectController {
         return count;
     }
 
-    private synchronized DetectResult predict_svm(Text t) throws InterruptedException {
+    private synchronized DetectResult predict_svm(Text t, String username) throws InterruptedException {
         DetectRecorder detectRecorder = new DetectRecorder();
+        detectRecorder.setUsername(username);
         detectRecorder.setId(UUID.randomUUID().toString());
         detectRecorder.setTextId(t.getId());
         detectRecorder.setModel("svm");
@@ -126,8 +128,9 @@ public class TextDetectController {
         return detectResult;
     }
 
-    private synchronized DetectResult predict_k_means(Text t) throws InterruptedException {
+    private synchronized DetectResult predict_k_means(Text t, String username) throws InterruptedException {
         DetectRecorder detectRecorder = new DetectRecorder();
+        detectRecorder.setUsername(username);
         detectRecorder.setId(UUID.randomUUID().toString());
         detectRecorder.setTextId(t.getId());
         detectRecorder.setModel("k-means");
@@ -147,8 +150,9 @@ public class TextDetectController {
         return detectResult;
     }
 
-    private synchronized DetectResult predict_decision_tree(Text t) throws InterruptedException {
+    private synchronized DetectResult predict_decision_tree(Text t, String username) throws InterruptedException {
         DetectRecorder detectRecorder = new DetectRecorder();
+        detectRecorder.setUsername(username);
         detectRecorder.setId(UUID.randomUUID().toString());
         detectRecorder.setTextId(t.getId());
         detectRecorder.setModel("decision_tree");
@@ -168,8 +172,9 @@ public class TextDetectController {
         return detectResult;
     }
 
-    private synchronized DetectResult predict_random_forest(Text t) throws InterruptedException {
+    private synchronized DetectResult predict_random_forest(Text t, String username) throws InterruptedException {
         DetectRecorder detectRecorder = new DetectRecorder();
+        detectRecorder.setUsername(username);
         detectRecorder.setId(UUID.randomUUID().toString());
         detectRecorder.setTextId(t.getId());
         detectRecorder.setModel("random_forest");
@@ -189,8 +194,9 @@ public class TextDetectController {
         return detectResult;
     }
 
-    private synchronized DetectResult predict_naive_bayes(Text t) throws InterruptedException {
+    private synchronized DetectResult predict_naive_bayes(Text t, String username) throws InterruptedException {
         DetectRecorder detectRecorder = new DetectRecorder();
+        detectRecorder.setUsername(username);
         detectRecorder.setId(UUID.randomUUID().toString());
         detectRecorder.setTextId(t.getId());
         detectRecorder.setModel("naive_bayes");

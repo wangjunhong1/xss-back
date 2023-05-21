@@ -17,4 +17,6 @@ public class FullDetectResult {
     private String finishDate;
     private String result;
     private String keyword;
+    private String username;
+    private String fileId;
 }

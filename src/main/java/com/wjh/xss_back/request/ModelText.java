@@ -9,5 +9,6 @@ import lombok.Data;
  */
 @Data
 public class ModelText {
+    private String username;
     private String text;
 }

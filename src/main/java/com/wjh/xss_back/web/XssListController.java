@@ -31,16 +31,19 @@ public class XssListController {
     FullDetectResultService fullDetectResultService;
 
     @GetMapping("/list_page")
-    public Page<FullDetectResult> list_(long current, long size) {
+    public Page<FullDetectResult> list_(long current, long size, String username) {
         Page<FullDetectResult> page = new Page<>(current, size);
-        Page<FullDetectResult> resultPage = fullDetectResultService.page(page);
+        QueryWrapper<FullDetectResult> wrapper = new QueryWrapper<>();
+        wrapper.eq("username", username);
+        Page<FullDetectResult> resultPage = fullDetectResultService.page(page, wrapper);
         return resultPage;
     }
 
     @GetMapping("/list")
-    public List<FullDetectResult> list(long start, long end) {
+    public List<FullDetectResult> list(long start, long end, String username) {
         log.error("开始查询所有数据");
         QueryWrapper<FullDetectResult> wrapper = new QueryWrapper<>();
+        wrapper.eq("username", username);
         if (start != 0 && end != 0) {
             Date start_date = new Date(start);
             Date end_date = new Date(end);
@@ -53,11 +56,12 @@ public class XssListController {
     }
 
     @GetMapping("/filter_list")
-    public Page<FullDetectResult> list_filter(long start, long end, long current, long size) {
+    public Page<FullDetectResult> list_filter(long start, long end, long current, long size, String username) {
         Date start_date = new Date(start);
         Date end_date = new Date(end);
         Page<FullDetectResult> page = new Page<>(current, size);
         QueryWrapper<FullDetectResult> wrapper = new QueryWrapper<>();
+        wrapper.eq("username", username);
         wrapper.ge("start_date", start_date);
         wrapper.le("finish_date", end_date);
         Page<FullDetectResult> resultPage = fullDetectResultService.page(page, wrapper);

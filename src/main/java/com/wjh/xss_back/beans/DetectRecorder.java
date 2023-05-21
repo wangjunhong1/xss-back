@@ -21,4 +21,5 @@ public class DetectRecorder {
     private String model;
     private Date startDate;
     private Date finishDate;
+    private String username;
 }

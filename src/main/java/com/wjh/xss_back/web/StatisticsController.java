@@ -2,14 +2,10 @@ package com.wjh.xss_back.web;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.wjh.xss_back.beans.DetectRecorder;
-import com.wjh.xss_back.beans.DetectResult;
-import com.wjh.xss_back.beans.Text;
+import com.wjh.xss_back.beans.*;
 import com.wjh.xss_back.response.KeywordCount;
-import com.wjh.xss_back.service.DetectRecorderService;
-import com.wjh.xss_back.service.DetectResultService;
-import com.wjh.xss_back.service.FileDetectRecorderService;
-import com.wjh.xss_back.service.TextService;
+import com.wjh.xss_back.service.*;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,25 +38,35 @@ public class StatisticsController {
     @Autowired
     DetectRecorderService detectRecorderService;
 
-    @PostMapping("/card_data")
-    public String[] getCardData() {
+    @Autowired
+    FullDetectResultService fullDetectResultService;
+
+    @Autowired
+    TextDetectRecorderService textDetectRecorderService;
+
+    @GetMapping("/card_data")
+    public String[] getCardData(String username) {
         String[] cardData = new String[4];
-        cardData[0] = String.valueOf(fileDetectRecorderService.list().size());
-        QueryWrapper<Text> wrapper = new QueryWrapper<>();
-        wrapper.isNull("file_id");
-        cardData[1] = String.valueOf(textService.list(wrapper).size());
-        QueryWrapper<DetectResult> resultQueryWrapper = new QueryWrapper<>();
-        resultQueryWrapper.eq("result", "攻击样本");
-        cardData[2] = String.valueOf(detectResultService.list(resultQueryWrapper).size());
-        resultQueryWrapper.clear();
-        resultQueryWrapper.eq("result", "正常样本");
-        cardData[3] = String.valueOf(detectResultService.list(resultQueryWrapper).size());
+        QueryWrapper<FileDetectRecorder> wrapper = new QueryWrapper<>();
+        wrapper.eq("username", username);
+        cardData[0] = String.valueOf(fileDetectRecorderService.list(wrapper).size());
+        QueryWrapper<TextDetectRecorder> wrapper2 = new QueryWrapper<>();
+        wrapper2.eq("username", username);
+        cardData[1] = String.valueOf(textDetectRecorderService.list(wrapper2).size());
+        QueryWrapper<FullDetectResult> wrapper3 = new QueryWrapper<>();
+        wrapper3.eq("result", "攻击样本");
+        wrapper3.eq("username", username);
+        cardData[2] = String.valueOf(fullDetectResultService.list(wrapper3).size());
+        wrapper3.clear();
+        wrapper3.eq("result", "正常样本");
+        wrapper3.eq("username", username);
+        cardData[3] = String.valueOf(fullDetectResultService.list(wrapper3).size());
         log.error("return : " + cardData);
         return cardData;
     }
 
     @GetMapping("/bar_data")
-    public List<Long>[] getBarData() {
+    public List<Long>[] getBarData(String username) {
         List<String> thisWeek = getThisWeek();
         List<Long> xssCountList = new ArrayList<>();
         List<Long> normalCountList = new ArrayList<>();
@@ -68,6 +74,7 @@ public class StatisticsController {
             QueryWrapper<DetectRecorder> queryWrapper = new QueryWrapper<>();
             queryWrapper.le("start_date", date + "23:59:59");
             queryWrapper.ge("finish_date", date + "00:00:00");
+            queryWrapper.eq("username", username);
             List<DetectRecorder> detectRecorderList = detectRecorderService.list(queryWrapper);
             List<String> detectRecorderIds = detectRecorderList
                     .stream().map(detectRecorder -> detectRecorder.getId()).collect(Collectors.toList());
@@ -92,9 +99,11 @@ public class StatisticsController {
 
 
     @GetMapping("/pie_data")
-    public List<KeywordCount> getPieData() {
+    public List<KeywordCount> getPieData(String username) {
         List<KeywordCount> keywordCountList = new ArrayList<>();
-        List<String> keywords = detectResultService.list().stream().map(detectResult -> detectResult.getKeyword()).collect(Collectors.toList());
+        QueryWrapper<FullDetectResult> wrapper = new QueryWrapper<>();
+        wrapper.eq("username", username);
+        List<String> keywords = fullDetectResultService.list(wrapper).stream().map(detectResult -> detectResult.getKeyword()).collect(Collectors.toList());
         Map<String, Integer> keyword_ = new HashMap<>();
         for (String keyword : keywords) {
             String[] split = keyword.replaceAll("[\\[\\]',]", "").split("\\s+");
