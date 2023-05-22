@@ -47,9 +47,7 @@ public class FileDetectController {
     private String fileId;
 
     {
-        String path = FileDetectController.class.getClass().getResource("/").getPath();
-        File file = new File(path + "/csv");
-        FILE_DIRECTORY = file.getAbsolutePath();
+        File file = new File("/xss-back/csv");
         if (!file.exists()) {
             file.mkdirs();
         }
