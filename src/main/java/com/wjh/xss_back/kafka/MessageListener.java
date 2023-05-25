@@ -20,14 +20,14 @@ public class MessageListener {
     @Autowired
     TextDetectController textDetectController;
 
-//    @KafkaListener(topics = "p2j-file")
+    @KafkaListener(topics = "p2j-file")
     public void onFileMessage(ConsumerRecord<String, String> record) {
         String message = record.value();
         fileDetectController.list = JSON.parseArray(message, Result.class);
         fileDetectController.notify_();
     }
 
-//    @KafkaListener(topics = "p2j-text")
+    @KafkaListener(topics = "p2j-text")
     public void onTextMessage(ConsumerRecord<String, String> record) {
         String message = record.value();
         textDetectController.list = JSON.parseArray(message, Result.class);

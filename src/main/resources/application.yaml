@@ -15,7 +15,7 @@ spring:
   datasource:
     username: root
     password: password
-    url: jdbc:mysql://127.0.0.1:3306/db_xss?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=true&serverTimezone=UTC&rewriteBatchedStatements=true
+    url: jdbc:mysql://mysql-host:3306/db_xss?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=true&serverTimezone=UTC&rewriteBatchedStatements=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     #把默认数据源切换成druid
     type: com.alibaba.druid.pool.DruidDataSource
