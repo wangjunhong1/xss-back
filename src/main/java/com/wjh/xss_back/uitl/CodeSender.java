@@ -61,7 +61,7 @@ public class CodeSender {
         // 输出json格式的字符串回包
         log.error(SendSmsResponse.toJsonString(resp));
         if (resp.getSendStatusSet()[0].getCode().equals("Ok")) {
-            return templateParamSet1[1];
+            return templateParamSet1[0];
         } else {
             throw new TencentCloudSDKException("消息发送失败");
         }
