@@ -25,7 +25,7 @@ public class CodeSender {
     private static final String smsSdkAppId = "1400517293";
     private static final String signName = "樱桃夏至个人公众号";
     private static final String templateId = "1430027";
-    private static final String[] params = new String[]{"", "2"};
+    private static final String validity = "2";
     private static SmsClient client;
     ;
 
@@ -53,9 +53,7 @@ public class CodeSender {
         req.setSignName(signName);
         req.setTemplateId(templateId);
 
-        params[1] = generateCode();
-
-        String[] templateParamSet1 = params;
+        String[] templateParamSet1 = new String[]{generateCode(), validity};
         req.setTemplateParamSet(templateParamSet1);
 
         // 返回的resp是一个SendSmsResponse的实例，与请求对象对应
@@ -63,8 +61,8 @@ public class CodeSender {
         // 输出json格式的字符串回包
         log.error(SendSmsResponse.toJsonString(resp));
         if (resp.getSendStatusSet()[0].getCode().equals("Ok")) {
-            return params[1];
-        }else{
+            return templateParamSet1[1];
+        } else {
             throw new TencentCloudSDKException("消息发送失败");
         }
     }
@@ -77,5 +75,9 @@ public class CodeSender {
         }
         String sms_code = String.format("%06d", code);
         return sms_code;
+    }
+
+    public static void main(String[] args) throws TencentCloudSDKException {
+        sendCode("15310108138");
     }
 }
