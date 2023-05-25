@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MessageSender {
-    @Autowired
+//    @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
     private String TOPIC = "j2p";
 

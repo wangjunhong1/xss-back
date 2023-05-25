@@ -75,6 +75,11 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.2.17</version>
         </dependency>
+        <dependency>
+            <groupId>com.tencentcloudapi</groupId>
+            <artifactId>tencentcloud-sdk-java-sms</artifactId>
+            <version>3.1.763</version>
+        </dependency>
     </dependencies>
 
     <build>
