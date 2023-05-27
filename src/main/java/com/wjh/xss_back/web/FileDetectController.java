@@ -7,6 +7,7 @@ import com.wjh.xss_back.request.Model;
 import com.wjh.xss_back.kafka.MessageSender;
 import com.wjh.xss_back.response.FileDetectResponse;
 import com.wjh.xss_back.service.*;
+import com.wjh.xss_back.uitl.OssUpload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +28,7 @@ import java.util.*;
 @CrossOrigin(originPatterns = "*", allowCredentials = "true")
 @Slf4j
 public class FileDetectController {
-    private String FILE_DIRECTORY = "";
+    private String FILE_DIRECTORY = "/xss-back/csv";
     private String path = "";
     public List<Result> list = null;
     @Autowired
@@ -47,7 +48,7 @@ public class FileDetectController {
     private String fileId;
 
     {
-        File file = new File("/xss-back/csv");
+        File file = new File(FILE_DIRECTORY);
         if (!file.exists()) {
             file.mkdirs();
         }
@@ -59,11 +60,12 @@ public class FileDetectController {
         String[] names = file.getOriginalFilename().split("[.]");
         System.out.println(names.length);
         System.out.println(file.getOriginalFilename());
-        String file_name = System.currentTimeMillis() + "." + names[names.length - 1];
+        String file_name = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date()) + "." + names[names.length - 1];
         path = FILE_DIRECTORY + "/" + file_name;
         log.info("接收到前端上传的文件：" + path);
         if (!file.isEmpty()) {
             try {
+                OssUpload.upload(file_name, file.getInputStream());
                 file.transferTo(new File(path));
                 log.info("文件保存成功");
             } catch (IOException e) {
@@ -180,6 +182,10 @@ public class FileDetectController {
             // TODO检测失败
         } finally {
             list = null;
+            File file = new File(path);
+            if (file.exists()) {
+                file.delete();
+            }
         }
     }
 }
